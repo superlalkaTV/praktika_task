@@ -53,9 +53,13 @@ public class XMLParser {
                 public void characters(char ch[], int start, int length) throws SAXException {
                     // Если перед этим мы отметили, что имя тэга NAME - значит нам надо текст использовать.
                     if (obl) {
-
-                        databaseHandler.insertObl(new String(ch, start, length));
-                        System.out.println("Obl Name: " + new String(ch, start, length));
+                        String oblName = new String(ch, start, length);
+                        if(oblName.equals("")){}
+                        else {
+                            if(databaseHandler.checkObl(oblName)){
+                                databaseHandler.insertObl(oblName);
+                            }
+                        }
                         obl = false;
                     }
                     if (region) {

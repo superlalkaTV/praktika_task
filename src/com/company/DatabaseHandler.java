@@ -1,9 +1,6 @@
 package com.company;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class DatabaseHandler extends Configs{
     Connection dbConnection;
@@ -11,11 +8,32 @@ public class DatabaseHandler extends Configs{
     public Connection getDbConnection() throws ClassNotFoundException, SQLException{
         String connectionString = "jdbc:mysql://" + dbHost + ":" + dbPort + "/" + dbName;
 
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
 
         dbConnection = DriverManager.getConnection(connectionString, dbUser, dbPass);
 
         return dbConnection;
+    }
+
+    public boolean checkObl(String value){
+        String insert = "SELECT * FROM " + Const.OBL_TABLE + " WHERE value=(?)";
+        boolean isAvailable = false;
+        try{
+            PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
+            preparedStatement.setString(1, value);
+            ResultSet resultSet;
+            resultSet = preparedStatement.executeQuery();
+
+
+            if(!resultSet.next()){
+                isAvailable = true;
+            }//Missing in your code
+
+        }catch (Exception e){
+            System.out.println("Ошибка в поиске обл");
+        }
+
+        return isAvailable;
     }
 
     public void insertObl(String value){
@@ -25,7 +43,6 @@ public class DatabaseHandler extends Configs{
         try {
             PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
             preparedStatement.setString(1, value);
-
             preparedStatement.executeUpdate();
         } catch (Exception throwables) {
             throwables.printStackTrace();
