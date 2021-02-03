@@ -15,8 +15,8 @@ public class DatabaseHandler extends Configs{
         return dbConnection;
     }
 
-    public boolean checkObl(String value){
-        String insert = "SELECT * FROM " + Const.OBL_TABLE + " WHERE value=(?)";
+    public boolean check(String table, String value){
+        String insert = "SELECT * FROM " + table + " WHERE value=(?)";
         boolean isAvailable = false;
         try{
             PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
@@ -30,15 +30,15 @@ public class DatabaseHandler extends Configs{
             }//Missing in your code
 
         }catch (Exception e){
-            System.out.println("Ошибка в поиске обл");
+            System.out.println("Ошибка в поиске в таблице " + table);
         }
 
         return isAvailable;
     }
 
-    public void insertObl(String value){
+    public void insert(String table, String tableValue, String value){
 
-        String insert = "INSERT INTO " + Const.OBL_TABLE + "(" + Const.OBL_VALUE + ") VALUES(?)";
+        String insert = "INSERT INTO " + table + "(" + tableValue + ") VALUES(?)";
 
         try {
             PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
@@ -48,4 +48,7 @@ public class DatabaseHandler extends Configs{
             throwables.printStackTrace();
         }
     }
+
+
+
 }
