@@ -33,83 +33,105 @@ public class XMLParser {
                 @Override
                 public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
                     // Если тэг имеет имя ???, то мы этот момент отмечаем - начался тэг ???
-                    if (record) {
-                        if (qName.equalsIgnoreCase("OBL_NAME")) {
-                            obl = true;
-                        }
-                        if (qName.equalsIgnoreCase("REGION_NAME")) {
-                            region = true;
-                        }
-                        if (qName.equalsIgnoreCase("CITY_NAME")) {
-                            city = true;
-                        }
-                        if (qName.equalsIgnoreCase("CITY_REGION_NAME")) {
-                            city_region = true;
-                        }
-                        if (qName.equalsIgnoreCase("STREET_NAME")) {
-                            street = true;
-                        }
+                    if (qName.equalsIgnoreCase("RECORD")) {
+                        record = true;
                     }
+                    if (qName.equalsIgnoreCase("OBL_NAME")) {
+                        obl = true;
+                    }
+                    if (qName.equalsIgnoreCase("REGION_NAME")) {
+                        region = true;
+                    }
+                    if (qName.equalsIgnoreCase("CITY_NAME")) {
+                        city = true;
+                    }
+                    if (qName.equalsIgnoreCase("CITY_REGION_NAME")) {
+                        city_region = true;
+                    }
+                    if (qName.equalsIgnoreCase("STREET_NAME")) {
+                        street = true;
+                    }
+
                 }
 
                 // Метод вызывается когда SAXParser считывает текст между тэгами
                 @Override
                 public void characters(char ch[], int start, int length) throws SAXException {
                     // Если перед этим мы отметили, что имя тэга NAME - значит нам надо текст использовать.
-                    if (obl) {
-                        String oblName = new String(ch, start, length);
-                        if(oblName.equals("")){}
-                        else {
-                            if(databaseHandler.check(Const.OBL_TABLE ,oblName)){
-                                databaseHandler.insert(Const.OBL_TABLE, Const.OBL_VALUE, oblName);
-                                System.out.println("Добавлено в бд "+ oblName);
+                    if (record) {
+                        String oblName;
+                        String regionName;
+                        String cityName;
+                        String cityRegionName;
+                        String streetName;
+
+                        int oblId;
+                        int regionId;
+                        int cityId;
+                        int cityRegionId;
+                        int streetId;
+
+                        if (obl) {
+                            oblName = new String(ch, start, length);
+                            if (oblName.length()<2||oblName.equals(null)) { }
+                            else {
+                                if (databaseHandler.check(Const.OBL_TABLE, oblName)) {
+                                    databaseHandler.insert(Const.OBL_TABLE, Const.OBL_VALUE, oblName);
+                                    System.out.println("Добавлено в бд " + oblName);
+                                }
+                                System.out.println("ID теста: " + databaseHandler.searchId(Const.OBL_TABLE, oblName));
                             }
+
+                            oblId = databaseHandler.searchId(Const.OBL_TABLE, oblName);
+                            System.out.println("Obl ID: " + oblId);
+                            obl = false;
                         }
-                        obl = false;
-                    }
-                    if (region) {
-                        String regionName = new String(ch, start, length);
-                        if(regionName.equals("")){}
-                        else{
-                            if(databaseHandler.check(Const.REGION_TABLE, regionName));{
-                                databaseHandler.insert(Const.REGION_TABLE, Const.REGION_VALUE, regionName);
-                                System.out.println("Добавлено в бд: " +  regionName);
+                        if (region) {
+                            regionName = new String(ch, start, length);
+                            if ( regionName.length()<2||regionName.equals(null)) {}
+                            else {
+                                if (databaseHandler.check(Const.REGION_TABLE, regionName)) {
+                                    databaseHandler.insert(Const.REGION_TABLE, Const.REGION_VALUE, regionName);
+                                    System.out.println("Добавлено в бд: " + regionName);
+                                }
                             }
+                            region = false;
                         }
-                        region = false;
-                    }
-                    if (city) {
-                        String cityName = new String(ch, start, length);
-                        if(cityName.equals("")){}
-                        else {
-                            if(databaseHandler.check(Const.CITY_TABLE, cityName)){
-                                databaseHandler.insert(Const.CITY_TABLE, Const.CITYS_VALUE, cityName);
-                                System.out.println("Добавлено в бд: " + cityName);
+                        if (city) {
+                            cityName = new String(ch, start, length);
+                            if (cityName.length()<2||cityName.equals(null)) {}
+                            else {
+                                if (databaseHandler.check(Const.CITY_TABLE, cityName)) {
+                                    databaseHandler.insert(Const.CITY_TABLE, Const.CITYS_VALUE, cityName);
+                                    System.out.println("Добавлено в бд: " + cityName);
+                                }
                             }
+                            city = false;
                         }
-                        city = false;
-                    }
-                    if (city_region) {
-                        String cityRegionName = new String(ch, start, length);
-                        if(cityRegionName.equals("")){}
-                        else{
-                            if(databaseHandler.check(Const.CITY_REGION_TABLE, cityRegionName)){
-                                databaseHandler.insert(Const.CITY_REGION_TABLE, Const.CITY_REGIONS_VALUE, cityRegionName);
-                                System.out.println("Добавлено в бд: " + cityRegionName);
+                        if (city_region) {
+                            cityRegionName = new String(ch, start, length);
+                            if (cityRegionName.length()<2||cityRegionName.equals(null)) { }
+                            else {
+                                if (databaseHandler.check(Const.CITY_REGION_TABLE, cityRegionName)) {
+                                    databaseHandler.insert(Const.CITY_REGION_TABLE, Const.CITY_REGIONS_VALUE, cityRegionName);
+                                    System.out.println("Добавлено в бд: " + cityRegionName);
+                                }
                             }
+                            city_region = false;
                         }
-                        city_region = false;
-                    }
-                    if (street) {
-                        String streetName = new String(ch, start, length);
-                        if(streetName.equals("")){}
-                        else{
-                            if(databaseHandler.check(Const.STREET_TABLE, streetName)){
-                                databaseHandler.insert(Const.STREET_TABLE, Const.STREET_VALUE, streetName);
-                                System.out.println("Добавлено в бд: " + streetName);
+                        if (street) {
+                            streetName = new String(ch, start, length);
+                            if (streetName.length()<2||streetName.equals(null)) {
+                            } else {
+                                if (databaseHandler.check(Const.STREET_TABLE, streetName)) {
+                                    databaseHandler.insert(Const.STREET_TABLE, Const.STREET_VALUE, streetName);
+                                    System.out.println("Добавлено в бд: " + streetName);
+                                }
                             }
+                            street = false;
                         }
-                        street = false;
+
+
                     }
                 }
             };

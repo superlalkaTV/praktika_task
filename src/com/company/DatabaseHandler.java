@@ -15,6 +15,28 @@ public class DatabaseHandler extends Configs{
         return dbConnection;
     }
 
+    public int searchId(String table, String value) {
+        String insert = "SELECT * FROM " + table + " WHERE VALUE=(?)";
+        int result = 0;
+
+        try{
+            PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
+            preparedStatement.setString(1, value);
+            ResultSet resultSet;
+            resultSet = preparedStatement.executeQuery();
+
+
+            if (resultSet.next()){
+
+                result = resultSet.getInt(1);
+            }
+
+        }catch (Exception e){
+            System.out.println("Ошибка в поиске в таблице " + table);
+        }
+        return result;
+    }
+
     public boolean check(String table, String value){
         String insert = "SELECT * FROM " + table + " WHERE value=(?)";
         boolean isAvailable = false;
