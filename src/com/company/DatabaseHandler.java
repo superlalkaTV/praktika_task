@@ -15,9 +15,29 @@ public class DatabaseHandler extends Configs{
         return dbConnection;
     }
 
-    public int searchId(String table, String value) {
+
+    public void record(int oblId, int regionId, int cityId, int cityRegionId, int streetId) {
+        String insert = "INSERT INTO records (" + Const.RECORD_OBL_ID + "," + Const.RECORD_REGION_ID + "," + Const.RECORD_CITY_ID +
+                "," + Const.RECORD_CITY_REGION_ID + "," + Const.RECORD_STREET_ID + ") VALUES(?,?,?,?,?)";
+        try{
+
+            PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
+            preparedStatement.setInt(1, oblId);
+            preparedStatement.setInt(2, regionId);
+            preparedStatement.setInt(3, cityId);
+            preparedStatement.setInt(4, cityRegionId);
+            preparedStatement.setInt(5, streetId);
+
+            preparedStatement.executeUpdate();
+
+        }catch (Exception e){
+            System.out.println("Ошибка при создании поля record!");
+        }
+    }
+
+    public Integer searchId(String table, String value) {
         String insert = "SELECT * FROM " + table + " WHERE VALUE=(?)";
-        int result = 0;
+        Integer result = null;
 
         try{
             PreparedStatement preparedStatement = getDbConnection().prepareStatement(insert);
@@ -34,6 +54,7 @@ public class DatabaseHandler extends Configs{
         }catch (Exception e){
             System.out.println("Ошибка в поиске в таблице " + table);
         }
+
         return result;
     }
 

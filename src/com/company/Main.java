@@ -18,6 +18,6 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Main {
 
     public static void main(String args[]) {
-        XMLParser.parse("BookCatalog.xml");
+        XMLParser.parse("test.xml");
     }
 }
